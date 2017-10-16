@@ -10,20 +10,24 @@
 	  <h1>Mis Ventas</h1>
 	</div>
 
-	<div class="w3-bar w3-light-grey w3-border">
-		<a href="#" class="w3-bar-item w3-button w3-mobile">Home</a>
-	    <input type="text" class="w3-bar-item w3-input w3-white w3-mobile" style="width: 40em;" placeholder="Buscar..">
-	    <button class="w3-bar-item w3-button w3-green w3-mobile"><i class="fa fa-search"></i></button>
-	    <a href="#" class="w3-bar-item w3-button w3-mobile"><i class="fa fa-shopping-cart"></i></a>
-	    <a href="#" class="w3-bar-item w3-button w3-mobile">Vender artículo</a>
-	    <a href="/login" class="w3-bar-item w3-button w3-mobile">Iniciar sesión</a>
-	    <span class="w3-bar-item w3-mobile" style="background-color: inherit;padding: 8px 0px;">/</span>
-	    <a href="#" class="w3-bar-item w3-button w3-mobile">Registrarse</a>
-	    <a href="#" class="w3-bar-item w3-button w3-mobile">Ayuda</a>
+	<div class="w3-bar w3-light-grey w3-border w3-card-4">
+		<a href="/" class="w3-bar-item w3-button">Artículos</a>
+		<form method="get" action="/search">
+	    	<input name="query" type="text" class="w3-bar-item w3-input w3-white" style="width: 40%;" placeholder="Buscar..">
+	    	<button class="w3-bar-item w3-button w3-green w3-mobile"><i class="fa fa-search"></i></button>
+		</form>
+		<a href="#" class="w3-bar-item w3-button"><i class="fa fa-shopping-cart"></i></a>
+		<a href="#" class="w3-bar-item w3-button">Vender artículo</a>
+		<div style="float: right;">
+		    <a href="/login" class="w3-bar-item w3-button w3-border-right">Ingresar</a>
+		    <a href="#" class="w3-bar-item w3-button w3-border-right">Registrarse</a>
+		    <a href="#" class="w3-bar-item w3-button">Ayuda</a>
+		</div>
   	</div>
 
-  	<product-table>
-  	
+  	<h2 style="margin: 10px 20px;">--subtitle--</h2>
+
+  	<page-content>
   	
 </body>
 </html>
