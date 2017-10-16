@@ -1,5 +1,5 @@
 use strict;
-package utils;
+package Modules::Util;
 sub replace {
   my ($from,$to,$string) = @_;
   $string =~s/$from/$to/ig;                          #case-insensitive/global (all occurrences)

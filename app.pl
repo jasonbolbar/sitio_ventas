@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-use utils;
+use Modules::Util;
 use Modules::Http::Cookie;
 use Modules::Http::Request;
 
@@ -9,11 +9,12 @@ main();
 sub main
 {
 	Modules::Http::Request::addHeader();
-	$content = utils::getTemplate('templates/layout.html');
-	$content = utils::replace("<page-content>", utils::getTemplate('templates/table.html') , $content);
-	$content = utils::replace("--title--", "Artículos", $content);
-	$content = utils::replace("--subtitle--", "Artículos", $content);
-	$content = utils::replace("--search-value--","", $content);
+	$content = Modules::Util::getTemplate('templates/layout.html');
+	$content = Modules::Util::replace("<nav-bar>", Modules::Util::getTemplate('templates/nav-bar.html') , $content);
+	$content = Modules::Util::replace("<page-content>", Modules::Util::getTemplate('templates/table.html') , $content);
+	$content = Modules::Util::replace("--title--", "Artículos", $content);
+	$content = Modules::Util::replace("--subtitle--", "Artículos", $content);
+	$content = Modules::Util::replace("--search-value--","", $content);
 	print $content;
 }
 

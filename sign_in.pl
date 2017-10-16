@@ -1,15 +1,16 @@
 #!/usr/bin/perl -w
 
-use utils;
+use Modules::Util;
+use Modules::Http::Request;
 
 main();
 
 sub main
 {
-	utils::addHeader();
-	$content = utils::getTemplate('templates/layout.html');
-	$content = utils::replace("<page-content>", utils::getTemplate('templates/sign-in.html') , $content);
-	$content = utils::replace("--title--", "Nuevo Usuario", $content);
-	$content = utils::replace("--subtitle--", "Registrarse", $content);
+	Modules::Http::Request::addHeader();
+	$content = Modules::Util::getTemplate('templates/layout.html');
+	$content = Modules::Util::replace("<page-content>", Modules::Util::getTemplate('templates/sign-in.html') , $content);
+	$content = Modules::Util::replace("--title--", "Nuevo Usuario", $content);
+	$content = Modules::Util::replace("--subtitle--", "Registrarse", $content);
 	print $content;
 }

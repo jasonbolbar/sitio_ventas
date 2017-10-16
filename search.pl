@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-use utils;
+use Modules::Util;
 use Modules::Http::Request;
 main();
 
@@ -8,11 +8,12 @@ sub main
 {
 	Modules::Http::Request::addHeader();
 	$query = getQuery();
-	$content = utils::getTemplate('templates/layout.html');
-	$content = utils::replace("<page-content>", utils::getTemplate('templates/search-no-results.html') , $content);
-	$content = utils::replace("--title--", "Búsqueda", $content);
-	$content = utils::replace("--subtitle--", "Resultados", $content);
-	$content = utils::replace("--search-value--", "value = '$query'", $content);
+	$content = Modules::Util::getTemplate('templates/layout.html');
+	$content = Modules::Util::replace("<nav-bar>", Modules::Util::getTemplate('templates/nav-bar.html') , $content);
+	$content = Modules::Util::replace("<page-content>", Modules::Util::getTemplate('templates/search-no-results.html') , $content);
+	$content = Modules::Util::replace("--title--", "Búsqueda", $content);
+	$content = Modules::Util::replace("--subtitle--", "Resultados", $content);
+	$content = Modules::Util::replace("--search-value--", "value = '$query'", $content);
 	print $content;
 }
 

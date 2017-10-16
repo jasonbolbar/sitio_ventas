@@ -1,15 +1,17 @@
 #!/usr/bin/perl -w
 
-use utils;
+use Modules::Util;
+use Modules::Http::Request;
 
 main();
 
 sub main
 {
-	utils::addHeader();
-	$content = utils::getTemplate('templates/layout.html');
-	$content = utils::replace("<page-content>", utils::getTemplate('templates/support.html') , $content);
-	$content = utils::replace("--title--", "Ayuda", $content);
-	$content = utils::replace("--subtitle--", "Consultas, retroalimentación y reclamos", $content);
+	Modules::Http::Request::addHeader();
+	$content = Modules::Util::getTemplate('templates/layout.html');
+	$content = Modules::Util::replace("<nav-bar>", Modules::Util::getTemplate('templates/nav-bar.html') , $content);
+	$content = Modules::Util::replace("<page-content>", Modules::Util::getTemplate('templates/support.html') , $content);
+	$content = Modules::Util::replace("--title--", "Ayuda", $content);
+	$content = Modules::Util::replace("--subtitle--", "Consultas, retroalimentación y reclamos", $content);
 	print $content;
 }
