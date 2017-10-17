@@ -14,7 +14,8 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 -- Schema sitio_ventas
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `sitio_ventas` DEFAULT CHARACTER SET utf8 ;
+DROP SCHEMA IF EXISTS `sitio_ventas`;
+CREATE SCHEMA `sitio_ventas` DEFAULT CHARACTER SET utf8 ;
 USE `sitio_ventas` ;
 
 -- -----------------------------------------------------
@@ -38,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `sitio_ventas`.`users` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `person_id` INT NOT NULL,
   `username` VARCHAR(20) NOT NULL,
-  `password` VARCHAR(15) NULL,
+  `password` VARCHAR(64) NULL,
   PRIMARY KEY (`id`),
   INDEX `person_foreing_key_idx` (`person_id` ASC),
   UNIQUE INDEX `username_UNIQUE` (`username` ASC),
@@ -61,6 +62,7 @@ CREATE TABLE IF NOT EXISTS `sitio_ventas`.`sessions` (
   PRIMARY KEY (`id`),
   INDEX `user_foreign_key_idx` (`user_id` ASC),
   UNIQUE INDEX `session_id_UNIQUE` (`session_id` ASC),
+  UNIQUE INDEX `user_id_UNIQUE` (`user_id` ASC),
   CONSTRAINT `user_foreign_key`
     FOREIGN KEY (`user_id`)
     REFERENCES `sitio_ventas`.`users` (`id`)
@@ -146,6 +148,69 @@ CREATE TABLE IF NOT EXISTS `sitio_ventas`.`items` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Stored Procedures
+-- -----------------------------------------------------
+
+
+USE `sitio_ventas`;
+DROP procedure IF EXISTS `correct_credentials_provided`;
+DROP procedure IF EXISTS `register_user`;
+DROP procedure IF EXISTS `logout`;
+DROP procedure IF EXISTS `is_authenticated`;
+
+DELIMITER $$
+USE `sitio_ventas`$$
+CREATE PROCEDURE `authenticate_user`(IN username varchar(20), IN psw varchar(15), IN intrval INT)
+BEGIN
+set @id = null;
+SELECT id INTO @id FROM sitio_ventas.users where username = username and password = sha2(psw,0) limit 1;
+IF !isnull(@id) then
+  set @uuid = MID(UUID(),1,36);
+  set @expires_at = date_add(now(), interval intrval second);
+  INSERT INTO `sitio_ventas`.`sessions` ( `user_id`, `session_id`, `expires_at`) VALUES ( @id, @uuid, @expires_at);
+  SELECT 1 as authenticated, @uuid as session_id;
+ELSE
+  SELECT 0 as authenticated, null as session_id;
+END IF;
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+USE `sitio_ventas`$$
+CREATE PROCEDURE `register_user`(IN full_name varchar(35), IN email varchar(35), IN phone varchar(11), IN address varchar(120), IN username varchar(20), IN psw varchar(15))
+BEGIN
+INSERT INTO `sitio_ventas`.`people` (`name`, `email`, `phone`, `address`) VALUES (full_name, email, phone, address);
+INSERT INTO `sitio_ventas`.`users`(`person_id`, `username`,`password`) VALUES ( LAST_INSERT_ID() , username, sha2(psw,0) );
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+USE `sitio_ventas`$$
+CREATE PROCEDURE `logout`(IN session_id varchar(36))
+BEGIN
+SELECT `sessions`.`id` INTO @id FROM `sitio_ventas`.`sessions` WHERE session_id = session_id limit 1;
+DELETE FROM `sitio_ventas`.`sessions` WHERE id = @id;
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+USE `sitio_ventas`$$
+CREATE PROCEDURE `is_authenticated`(IN session_id varchar(36))
+BEGIN
+select count(*) INTO @count from sessions where session_id = session_id and expires_at > now();
+IF @count = 1 THEN
+ select 1 as authenticated;
+ELSE
+  call logout(session_id);
+  select 0 as authenticated;
+END IF;
+END$$
+
+DELIMITER ;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
