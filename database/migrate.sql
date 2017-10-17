@@ -148,6 +148,45 @@ CREATE TABLE IF NOT EXISTS `sitio_ventas`.`items` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+
+-- -----------------------------------------------------
+-- Views
+-- -----------------------------------------------------
+CREATE VIEW `active_shopping_carts` AS
+    SELECT 
+        `shopping_carts`.`id` AS `id`,
+        `shopping_carts`.`user_id` AS `user_id`,
+        `shopping_carts`.`finished` AS `finished`
+    FROM
+        `shopping_carts`
+    WHERE
+        (`shopping_carts`.`finished` = 0);
+
+CREATE VIEW `available_products` AS
+    SELECT 
+        `products`.`name` AS `name`,
+        `products`.`price` AS `price`,
+        `products`.`description` AS `description`,
+        `products`.`quantity` AS `quantity`
+    FROM
+        `products`
+    WHERE
+        (`products`.`quantity` > 0);
+
+ CREATE VIEW `shopping_cart_products` AS
+    SELECT 
+        `products`.`id` AS `id`,
+        `products`.`name` AS `name`,
+        `products`.`price` AS `price`,
+        `products`.`description` AS `description`,
+        `products`.`quantity` AS `in_stock`,
+        `items`.`quantity` AS `quantity`,
+        `items`.`cart_id` AS `cart_id`
+    FROM
+        (`products`
+        JOIN `items` ON ((`products`.`id` = `items`.`product_id`)))
+    ORDER BY `items`.`cart_id`;               
+
 -- -----------------------------------------------------
 -- Stored Procedures
 -- -----------------------------------------------------
@@ -211,6 +250,70 @@ END IF;
 END$$
 
 DELIMITER ;
+
+DELIMITER $$
+USE `sitio_ventas`$$
+CREATE PROCEDURE `search_products`(IN query VARCHAR(40))
+BEGIN
+SELECT * FROM available_products WHERE name LIKE CONCAT('%', query, '%');
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+USE `sitio_ventas`$$
+CREATE PROCEDURE `buy_product`(IN user_id INT, IN product_id INT)
+BEGIN
+DECLARE in_stock INT;
+DECLARE cart_id INT;
+DECLARE item_id INT;
+DECLARE quantity INT;
+
+SELECT quantity INTO @in_stock FROM products WHERE id = product_id LIMIT 1;
+
+IF @in_stock > 0 THEN
+  SELECT id INTO @cart_id FROM active_shopping_carts WHERE user_id = user_id LIMIT 1;
+
+  IF @cart_id IS NULL THEN
+    INSERT INTO shopping_carts (user_id, finished) VALUES (user_id, 0);
+    SET @cart_id = LAST_INSERT_ID();
+  END IF;
+    
+  SELECT id, quantity INTO @item_id, @quantity FROM items WHERE product_id = product_id AND cart_id = @cart_id LIMIT 1;
+
+  IF @item_id IS NULL THEN
+    INSERT INTO items (cart_id, product_id, quantity) VALUES (@cart_id, product_id, 1);
+  ELSEIF @quantity < @in_stock THEN
+    SET @quantity = @quantity + 1;
+    UPDATE items SET quantity = @quantity WHERE id = @item_id;
+  END IF;
+END IF;
+END$$
+
+DELIMITER ;
+
+
+DELIMITER $$
+USE `sitio_ventas`$$
+CREATE PROCEDURE `send_message`(IN user_id INT, IN message VARCHAR(120), IN name VARCHAR(35), IN email VARCHAR(35), IN phone VARCHAR(11))
+BEGIN
+DECLARE person_id INT;
+
+IF user_id IS NULL THEN
+  SELECT id INTO @person_id FROM people WHERE email = email;
+  IF @person_id IS NULL THEN
+    INSERT INTO people (name, email, phone) VALUES (name, email, phone);
+        SET @person_id = LAST_INSERT_ID();
+    END IF;
+ELSE
+  SELECT person_id INTO @person_id FROM users where id = user_id;
+END IF;
+
+INSERT INTO messages (person_id, message) VALUES (@person_id, message);
+END$$
+
+DELIMITER ;
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
