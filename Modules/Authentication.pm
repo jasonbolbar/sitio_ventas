@@ -45,6 +45,29 @@ sub isUserAuthenticated
 			$session_id
 		)
 	);
-	return $authenticated{'status'} == 1 ? $authenticated{'rows'}[0]{'authenticated'} : 0;
+	return $authenticated{'status'} == '1' ? $authenticated{'rows'}[0]{'authenticated'} : 0;
+}
+
+sub getSessionUserId {
+	my $session_id = Modules::Http::Cookie::getCookie('session_id');
+	my %userQuery = Modules::Database::Querier::execute(
+		'select user_id from sessions where session_id = ? limit 1',( $session_id )
+	);
+	$userQuery{'status'} ? $userQuery{'rows'}[0]{'user_id'} : -1;
+}
+
+sub logout
+{
+	my $session_id = Modules::Http::Cookie::getCookie('session_id');
+	my %logoutStatus = Modules::Database::Querier::do(
+		'call logout(?)',
+		(
+			$session_id
+		)
+	);
+	if ( $logoutStatus{'status'} == '1' )
+	{
+		Modules::Http::Cookie::setCookie('session_id','SESSION_DESTROYED',10);
+	}
 }
 1;

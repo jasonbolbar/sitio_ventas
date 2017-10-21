@@ -2,16 +2,24 @@
 
 use Modules::Util;
 use Modules::Http::Request;
+use Modules::Renders::NavBar;
 
 main();
 
 sub main
 {
-	Modules::Http::Request::addHeader();
-	$content = Modules::Util::getFile('templates/layout.html');
-	$content = Modules::Util::replace("<nav-bar>", Modules::Util::getFile('templates/nav-bar.html') , $content);
-	$content = Modules::Util::replace("<page-content>", Modules::Util::getFile('templates/shopping_cart.html') , $content);
-	$content = Modules::Util::replace("--title--", "Carrito de Compras", $content);
-	$content = Modules::Util::replace("--subtitle--", "Mis compras", $content);
-	print $content;
+
+    if (Modules::Authentication::isUserAuthenticated() == 1)
+	{
+		Modules::Http::Request::addHeader();
+		$content = Modules::Util::getFile('templates/layout.html');
+		$content = Modules::Renders::NavBar::render($content);
+		$content = Modules::Util::replace("<page-content>", Modules::Util::getFile('templates/shopping_cart.html') , $content);
+		$content = Modules::Util::replace("--title--", "Carrito de Compras", $content);
+		$content = Modules::Util::replace("--subtitle--", "Mis compras", $content);
+		print $content;
+	} else 
+	{
+		Modules::Http::Request::redirectTo('/');
+	}
 }
