@@ -9,7 +9,7 @@ main();
 sub main
 {
 	Modules::Http::Request::addHeader();
-	my %product = Modules::Http::Request::getRequestData();
+	my %product = Modules::Http::Request::getRequestData('POST');
 	my $sql = "INSERT INTO products (user_id, name, price, description, quantity) VALUES (?, ?, ?, ?, ?);";
 	my %row = Modules::Database::Querier::execute($sql, $user_id, $product{'name'}, $product{'price'}, $product{'description'}, $product{'quantity'});
 	print $row
