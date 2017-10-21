@@ -8,9 +8,9 @@ sub main
 {
 	Modules::Http::Request::addHeader();
 	$query = getQuery();
-	$content = Modules::Util::getTemplate('templates/layout.html');
-	$content = Modules::Util::replace("<nav-bar>", Modules::Util::getTemplate('templates/nav-bar.html') , $content);
-	$content = Modules::Util::replace("<page-content>", Modules::Util::getTemplate('templates/search-no-results.html') , $content);
+	$content = Modules::Util::getFile('templates/layout.html');
+	$content = Modules::Util::replace("<nav-bar>", Modules::Util::getFile('templates/nav-bar.html') , $content);
+	$content = Modules::Util::replace("<page-content>", Modules::Util::getFile('templates/search-no-results.html') , $content);
 	$content = Modules::Util::replace("--title--", "Búsqueda", $content);
 	$content = Modules::Util::replace("--subtitle--", "Resultados", $content);
 	$content = Modules::Util::replace("--search-value--", "value = '$query'", $content);
