@@ -15,6 +15,15 @@ sub main
 	$content = Modules::Util::replace("--title--", "Artículos", $content);
 	$content = Modules::Util::replace("--subtitle--", "Artículos", $content);
 	$content = Modules::Util::replace("--search-value--","", $content);
+
+	my $rows = '';
+	#my $sql = 'SELECT * FROM available_products;';
+	#my $sth = $dbh->prepare($sql);
+	#$sth->execute();
+	#while (@data = $sth->fetchrow_array()) {
+
+	#}
+	$content = Modules::Util::replace("--rows--", $rows, $content);
 	print $content;
 }
 

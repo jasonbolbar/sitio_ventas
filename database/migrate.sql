@@ -164,6 +164,7 @@ CREATE VIEW `active_shopping_carts` AS
 
 CREATE VIEW `available_products` AS
     SELECT 
+        `products`.`id` AS `id`,
         `products`.`name` AS `name`,
         `products`.`price` AS `price`,
         `products`.`description` AS `description`,
