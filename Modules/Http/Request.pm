@@ -6,7 +6,15 @@ sub addHeader {
 
 sub getRequestData
 {
-
+    my ($expectedMethod) = @_;
+    $expectedMethod //= 'GET';
+    if( $ENV{"REQUEST_METHOD"} ne $expectedMethod  )
+    {
+        print("Status: 404 Not Found\n");
+        addHeader();
+        print "<h1> No existe url ($expectedMethod) para $ENV{'REQUEST_URI'} <h1>";
+        die;
+    }
     my $xx;
     my $buffer;
     my %vars;

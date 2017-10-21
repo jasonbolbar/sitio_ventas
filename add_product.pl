@@ -7,7 +7,7 @@ main();
 sub main
 {
 	Modules::Http::Request::addHeader();
-	my %product = Modules::Http::Request::getRequestData();
+	my %product = Modules::Http::Request::getRequestData('POST');
 	my $sql = "INSERT INTO products (user_id, name, price, description, quantity) VALUES (?, ?, ?, ?, ?);";
 	my $numrows = $dbh->do( 
 			$sql, 

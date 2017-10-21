@@ -12,7 +12,7 @@ sub main
 		Modules::Http::Request::redirectTo('/');
 	} else 
 	{
-		%credentials = Modules::Http::Request::getRequestData();
+		%credentials = Modules::Http::Request::getRequestData('POST');
 		Modules::Authentication::authenticateUser($credentials{'usrname'}, $credentials{'psw'});
 	}
 }
