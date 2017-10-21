@@ -2,6 +2,8 @@
 
 use Modules::Util;
 use Modules::Http::Request;
+use Modules::Database::Querier;
+
 main();
 
 sub main
@@ -9,15 +11,12 @@ sub main
 	Modules::Http::Request::addHeader();
 	my %product = Modules::Http::Request::getRequestData();
 	my $sql = "INSERT INTO products (user_id, name, price, description, quantity) VALUES (?, ?, ?, ?, ?);";
-	my $numrows = $dbh->do( 
-			$sql, 
-			undef, 
-			$user_id, $baz, $product{'name'}, $product{'price'}, $product{'description'}, $product{'quantity'} 
-		);
-	if (not defined $numrows) {
-	   print STDERR 'Se ha producido un error' ;
-	} else {
-	   print STDERR 'El artículo se ha creado correctamente';
-	   Modules::Http::Request::redirectTo('/');
-	}
+	my %row = Modules::Database::Querier::execute($sql, $user_id, $product{'name'}, $product{'price'}, $product{'description'}, $product{'quantity'});
+	print $row
+	#if (not defined $rows) {
+	   #print 'Se ha producido un error' ;
+	#} else {
+	   #print 'El artículo se ha creado correctamente';
+	   #Modules::Http::Request::redirectTo('/');
+	#}
 }
