@@ -58,7 +58,7 @@ sub execute
 	} , sub {
 		my (my $query) = @_;
 		my @rows = ();
-		while ( my $row = $query->fetchrow_hashref() ) {
+		while ( my $row = $query->fetchrow_hashref() ) {	
 		   push @rows, $row;
 		}
 		return @rows;

@@ -3,6 +3,7 @@
 use Modules::Util;
 use Modules::Http::Cookie;
 use Modules::Http::Request;
+use Modules::Database::Querier;
 use Modules::Renders::NavBar;
 
 main();
@@ -17,14 +18,31 @@ sub main
 	$content = Modules::Util::replace("--subtitle--", "Artículos", $content);
 	$content = Modules::Util::replace("--search-value--","", $content);
 
-	my $rows = '';
-	#my $sql = 'SELECT * FROM available_products;';
-	#my $sth = $dbh->prepare($sql);
-	#$sth->execute();
-	#while (@data = $sth->fetchrow_array()) {
+	my $rows;
+	my %products = Modules::Database::Querier::execute('SELECT * FROM available_products;');
 
-	#}
-	$content = Modules::Util::replace("--rows--", $rows, $content);
+	if ($products{'status'} == 1 ) {
+		my $row;
+
+		if (@{$products{'rows'}} != 0) {
+			foreach $result (@{$products{'rows'}}){
+				$row = Modules::Util::getFile('templates/table-row.html');
+				$row = Modules::Util::replace('--name--', $result{'name'}, $row);
+				$row = Modules::Util::replace('--description--', $result{'description'}, $row);
+				$row = Modules::Util::replace('--price--', $result{'price'}, $row);
+
+				$rows .= $row;
+			}
+		} else {
+			$rows = Modules::Util::getFile('templates/search-no-results.html');
+		}
+		
+	} else {	
+		$rows = Modules::Util::getFile('templates/search-no-results.html');
+	}
+
+	$content = Modules::Util::replace("<rows>", $rows, $content);
+
 	print $content;
 }
 

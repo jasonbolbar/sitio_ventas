@@ -15,7 +15,7 @@ sub main
 			$user_id, $baz, $product{'name'}, $product{'price'}, $product{'description'}, $product{'quantity'} 
 		);
 	if (not defined $numrows) {
-	   print STDERR "ERROR: $DBI::errstr";
+	   print STDERR 'Se ha producido un error' ;
 	} else {
 	   print STDERR 'El artículo se ha creado correctamente';
 	   Modules::Http::Request::redirectTo('/');
