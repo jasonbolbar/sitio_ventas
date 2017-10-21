@@ -263,7 +263,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `sitio_ventas`$$
-CREATE PROCEDURE `buy_product`(IN user_id INT, IN product_id INT)
+CREATE PROCEDURE `add_product_to_cart`(IN user_id INT, IN product_id INT)
 BEGIN
 DECLARE in_stock INT;
 DECLARE cart_id INT;
@@ -289,6 +289,16 @@ IF @in_stock > 0 THEN
     UPDATE items SET quantity = @quantity WHERE id = @item_id;
   END IF;
 END IF;
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+USE `sitio_ventas`$$
+CREATE PROCEDURE `delete_cart`(IN cart_id Int)
+BEGIN
+DELETE FROM items where cart_id = cart_id;
+DELETE FROM shopping_carts WHERE id = cart_id;
 END$$
 
 DELIMITER ;
