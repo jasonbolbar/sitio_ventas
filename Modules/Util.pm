@@ -7,7 +7,7 @@ sub replace {
   return $string;
 }
 
-sub getTemplate {
+sub getFile {
 	my ($filename) = @_;
 	my $content = do 
 	{

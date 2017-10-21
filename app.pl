@@ -9,9 +9,9 @@ main();
 sub main
 {
 	Modules::Http::Request::addHeader();
-	$content = Modules::Util::getTemplate('templates/layout.html');
-	$content = Modules::Util::replace("<nav-bar>", Modules::Util::getTemplate('templates/nav-bar.html') , $content);
-	$content = Modules::Util::replace("<page-content>", Modules::Util::getTemplate('templates/table.html') , $content);
+	$content = Modules::Util::getFile('templates/layout.html');
+	$content = Modules::Util::replace("<nav-bar>", Modules::Util::getFile('templates/nav-bar.html') , $content);
+	$content = Modules::Util::replace("<page-content>", Modules::Util::getFile('templates/table.html') , $content);
 	$content = Modules::Util::replace("--title--", "Artículos", $content);
 	$content = Modules::Util::replace("--subtitle--", "Artículos", $content);
 	$content = Modules::Util::replace("--search-value--","", $content);

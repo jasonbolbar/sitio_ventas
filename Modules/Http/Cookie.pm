@@ -4,7 +4,7 @@ package Modules::Http::Cookie;
 sub setCookie {
 	my ($cookieName, $cookieValue, $maxAge) = @_;
 	$maxAge = $maxAge ? $maxAge : 3600;
-	print "Set-Cookie: $cookieName=$cookieValue; Max-Age=$maxAge\n";
+	print "Set-Cookie: $cookieName=$cookieValue; Max-Age=$maxAge;\n";
 }
 
 sub getCookies
@@ -23,5 +23,11 @@ sub getCookies
     $Cookies{$cookie} = $value;
   }
   return %Cookies;
+}
+
+sub getCookie {
+  my ($cookieName) = @_;
+  my %cookies = getCookies();
+  return $cookies{$cookieName};
 }
 1;
