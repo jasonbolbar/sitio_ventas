@@ -7,6 +7,12 @@ main();
 
 sub main
 {
-	%credentials = Modules::Http::Request::getRequestData();
-	Modules::Authentication::authenticateUser($credentials{'usrname'}, $credentials{'psw'});
+	if (Modules::Authentication::isUserAuthenticated() == 1)
+	{
+		Modules::Http::Request::redirectTo('/');
+	} else 
+	{
+		%credentials = Modules::Http::Request::getRequestData();
+		Modules::Authentication::authenticateUser($credentials{'usrname'}, $credentials{'psw'});
+	}
 }
