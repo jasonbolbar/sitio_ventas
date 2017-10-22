@@ -23,6 +23,7 @@ sub authenticateUser
 		if  ( $authentication{'rows'}[0]{'authenticated'} == 1 )
 		{
 			Modules::Http::Cookie::setCookie('session_id',$authentication{'rows'}[0]{'session_id'}, MAX_SESSION_AGE);
+			Modules::Http::Cookie::setCookie('Success', 'Sesión iniciada correctamente', MAX_ERROR_COOKIE_AGE);	
 			Modules::Http::Request::redirectTo('/');
 		} else
 		{
@@ -45,7 +46,7 @@ sub isUserAuthenticated
 			$session_id
 		)
 	);
-	return $authenticated{'status'} == '1' ? $authenticated{'rows'}[0]{'authenticated'} : 0;
+	return $authenticated{'status'} ? $authenticated{'rows'}[0]{'authenticated'} : 0;
 }
 
 sub getSessionUserId {
@@ -65,9 +66,10 @@ sub logout
 			$session_id
 		)
 	);
-	if ( $logoutStatus{'status'} == '1' )
+	if ( $logoutStatus{'status'})
 	{
-		Modules::Http::Cookie::setCookie('session_id','SESSION_DESTROYED',10);
+		Modules::Http::Cookie::setCookie('session_id','DESTROYED', MAX_SESSION_AGE);
+		Modules::Http::Cookie::setCookie('Success', 'Sesión finalizada correctamente', MAX_ERROR_COOKIE_AGE);	
 	}
 }
 1;

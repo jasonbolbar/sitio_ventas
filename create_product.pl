@@ -10,14 +10,24 @@ main();
 sub main
 {
 	my %product = Modules::Http::Request::getRequestData('POST');
-	my $user_id = Modules::Authentication::getSessionUserId();
-	my $sql = "INSERT INTO products (user_id, name, price, description, quantity) VALUES (?, ?, ?, ?, ?);";
-	my %row = Modules::Database::Querier::execute($sql, $user_id, $product{'name'}, $product{'price'}, $product{'description'}, $product{'quantity'});
+	%validProduct = validateProduct(%product);
+	if ( $validProduct{'valid'} )
+	{
+		my $user_id = Modules::Authentication::getSessionUserId();
+		my $sql = "INSERT INTO products (user_id, name, price, description, quantity) VALUES (?, ?, ?, ?, ?);";
+		my %row = Modules::Database::Querier::execute($sql, $user_id, $product{'name'}, $product{'price'}, $product{'description'}, $product{'quantity'});
 
-	if ($row{'status'} == 0) {
-	   Modules::Http::Request::redirectTo('/new_product?alert=error');
-	} else {
-	   Modules::Http::Request::redirectTo('/?alert=success');
+		if ($row{'status'} == 0) {
+			Modules::Http::Cookie::setCookie('Error', 'Error al intentar agregar el producto', 5);
+		    Modules::Http::Request::redirectTo('/new_product');
+		} else {
+		 	Modules::Http::Cookie::setCookie('Success', 'Producto Agregado Satisfactoriamente', 5);	
+		   	Modules::Http::Request::redirectTo('/');
+		}
+	} else
+	{
+		Modules::Http::Cookie::setCookie('Error', $validProduct{'errors'}, 5);
+		Modules::Http::Request::redirectTo('/new_product?alert=error');
 	}
 }
 

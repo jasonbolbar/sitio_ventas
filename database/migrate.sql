@@ -240,9 +240,9 @@ DELIMITER ;
 
 DELIMITER $$
 USE `sitio_ventas`$$
-CREATE PROCEDURE `is_authenticated`(IN session_id varchar(36))
+CREATE PROCEDURE `is_authenticated`(IN s_id varchar(36))
 BEGIN
-select count(*) INTO @count from sessions where session_id = session_id and expires_at > now();
+select count(*) INTO @count from sessions where session_id = s_id and expires_at > now();
 IF @count = 1 THEN
  select 1 as authenticated;
 ELSE
