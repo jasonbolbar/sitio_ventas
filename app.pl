@@ -31,7 +31,7 @@ sub main
 				$row = Modules::Util::getFile('templates/table-row.html');
 				$row = Modules::Util::replace('--name--', $result->{'name'}, $row);
 				$row = Modules::Util::replace('--description--', $result->{'description'}, $row);
-				$row = Modules::Util::replace('--price--', $result->{'price'}, $row);
+				$row = Modules::Util::replace('--price--', Modules::Util::currencyFormat($result->{'price'}), $row);
 				$row = Modules::Util::replace('--product-id--', $result->{'id'}, $row);
 				$rows .= $row;
 			}

@@ -18,5 +18,14 @@ sub getFile {
 	return $content;
 }
 
+sub currencyFormat {
+  my $number = shift @_;
+  # Add one comma each time through the do-nothing loop
+  1 while $number =~ s/^(-?\d+)(\d\d\d)/$1.$2/;
+  # Put the dollar sign in the right place
+  $number =~ s/^(-?)/$1\₡/;
+  $number;
+}
+
 
 1;
