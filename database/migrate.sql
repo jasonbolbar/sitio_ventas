@@ -264,7 +264,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `sitio_ventas`$$
-CREATE PROCEDURE `add_product_to_cart`(IN user_id INT, IN product_id INT)
+CREATE PROCEDURE `add_product_to_cart`(IN u_id INT, IN pr_id INT)
 BEGIN
 DECLARE in_stock INT;
 DECLARE cart_id INT;
@@ -274,20 +274,22 @@ DECLARE quantity INT;
 SELECT quantity INTO @in_stock FROM products WHERE id = product_id LIMIT 1;
 
 IF @in_stock > 0 THEN
-  SELECT id INTO @cart_id FROM active_shopping_carts WHERE user_id = user_id LIMIT 1;
+  SELECT id INTO @cart_id FROM active_shopping_carts WHERE user_id = u_id LIMIT 1;
 
   IF @cart_id IS NULL THEN
-    INSERT INTO shopping_carts (user_id, finished) VALUES (user_id, 0);
+    INSERT INTO shopping_carts (user_id, finished) VALUES (u_id, 0);
     SET @cart_id = LAST_INSERT_ID();
   END IF;
     
-  SELECT id, quantity INTO @item_id, @quantity FROM items WHERE product_id = product_id AND cart_id = @cart_id LIMIT 1;
+  SELECT id, quantity INTO @item_id, @quantity FROM items WHERE product_id = pr_id AND cart_id = @cart_id LIMIT 1;
 
   IF @item_id IS NULL THEN
     INSERT INTO items (cart_id, product_id, quantity) VALUES (@cart_id, product_id, 1);
   ELSEIF @quantity < @in_stock THEN
     SET @quantity = @quantity + 1;
+    SET @in_stock = @quantity -1;
     UPDATE items SET quantity = @quantity WHERE id = @item_id;
+    UPDATE products SET quantity = @in_stock where id = pr_id;
   END IF;
 END IF;
 END$$
@@ -296,9 +298,9 @@ DELIMITER ;
 
 DELIMITER $$
 USE `sitio_ventas`$$
-CREATE PROCEDURE `delete_cart`(IN cart_id Int)
+CREATE PROCEDURE `delete_cart`(IN crt_id Int)
 BEGIN
-DELETE FROM items where cart_id = cart_id;
+DELETE FROM items where cart_id = crt_id;
 DELETE FROM shopping_carts WHERE id = cart_id;
 END$$
 
