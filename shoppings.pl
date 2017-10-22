@@ -55,6 +55,7 @@ sub main
 		print $content;
 	} else 
 	{
+		Modules::Http::Cookie::setCookie('Error', 'Debe estar autenticado para acceder a esta sección', 5);
 		Modules::Http::Request::redirectTo('/');
 	}
 }

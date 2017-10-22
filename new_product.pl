@@ -19,6 +19,7 @@ sub main
 		$content = Modules::Util::replace("--subtitle--", "Vender producto", $content);
 	} else 
 	{
+		Modules::Http::Cookie::setCookie('Error', 'Debe estar autenticado para realizar esta acción', 5);
 		Modules::Http::Request::redirectTo('/');
 	}
 	Modules::Http::Request::addHeader();
