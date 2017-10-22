@@ -208,6 +208,7 @@ SELECT id INTO @id FROM sitio_ventas.users where username = username and passwor
 IF !isnull(@id) then
   set @uuid = MID(UUID(),1,36);
   set @expires_at = date_add(now(), interval intrval second);
+  DELETE FROM `sitio_ventas`.`sessions` WHERE user_id = @id AND expires_at < now();
   INSERT INTO `sitio_ventas`.`sessions` ( `user_id`, `session_id`, `expires_at`) VALUES ( @id, @uuid, @expires_at);
   SELECT 1 as authenticated, @uuid as session_id;
 ELSE

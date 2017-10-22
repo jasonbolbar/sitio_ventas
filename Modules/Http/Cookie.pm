@@ -13,7 +13,7 @@ sub getCookies
              '\%2C'=>',','\%3B'=>';','\%2B'=>'+','\%25'=>'%');
 
   my %Cookies = ();
-  foreach (split(/; /,$ENV{'HTTP_COOKIE'})) {
+  foreach (split(/; /,$ENV{'HTTP_COOKIE'} || '')) {
     my ($cookie,$value) = split(/=/);
     foreach my $ch ('\+','\%3A\%3A','\%26','\%3D','\%2C','\%3B','\%2B','\
 +%25') {

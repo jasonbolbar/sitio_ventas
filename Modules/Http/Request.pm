@@ -12,7 +12,7 @@ sub getRequestData
     {
         print("Status: 404 Not Found\n");
         addHeader();
-        print "<h1> No existe url ($expectedMethod) para $ENV{'REQUEST_URI'} <h1>";
+        print "<h1> No existe url ($ENV{'REQUEST_METHOD'}) para $ENV{'REQUEST_URI'} <h1>";
         die;
     }
     my $xx;

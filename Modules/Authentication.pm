@@ -5,7 +5,7 @@ use Modules::Http::Cookie;
 package Modules::Authentication;
 
 use constant MAX_SESSION_AGE => 3600;
-use constant MAX_ERROR_COOKIE_AGE => 60;
+use constant MAX_ERROR_COOKIE_AGE => 2;
 
 sub authenticateUser
 {
@@ -31,7 +31,7 @@ sub authenticateUser
 		}
 	} else
 	{
-		Modules::Http::Cookie::setCookie('Error', 'Usuario ya está autenticado',MAX_ERROR_COOKIE_AGE);
+		Modules::Http::Cookie::setCookie('Error', 'Ya existe una sesión activa para este usuario. Intentelo mas tarde',MAX_ERROR_COOKIE_AGE);
 		Modules::Http::Request::redirectTo('/login');
 	}
 }
