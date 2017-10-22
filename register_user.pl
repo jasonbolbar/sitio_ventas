@@ -75,6 +75,11 @@ sub validateUser {
 	    $valid = 0;
 		$errors .=  'El nombre de usuario ya existe. ';	
 	}
+	if ( emailExists($user{'email'}) )
+	{
+	    $valid = 0;
+		$errors .=  'Ya existe un usuario con este correo. ';	
+	}
 	return ( 'valid' => $valid, 'errors'=>$errors );
 }
 
@@ -83,4 +88,11 @@ sub usernameExists {
 	%query = Modules::Database::Querier::execute(
 		'select count(*) as user_count from users where username = ?', ($username));	
 	return $query{'status'} ? $query{'rows'}[0]{'user_count'} > 0 : 1;
+}
+
+sub emailExists {
+	my ($email) = @_;
+	%query = Modules::Database::Querier::execute(
+		'select count(*) as email_count from people where email = ?', ($email));	
+	return $query{'status'} ? $query{'rows'}[0]{'email_count'} > 0 : 1;
 }

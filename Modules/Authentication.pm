@@ -51,7 +51,7 @@ sub isUserAuthenticated
 sub getSessionUserId {
 	my $session_id = Modules::Http::Cookie::getCookie('session_id');
 	my %userQuery = Modules::Database::Querier::execute(
-		'select user_id from sessions where session_id = ? limit 1',( $session_id )
+		'select user_id from sessions where session_id = ? limit 1 and expires_at > now()',( $session_id )
 	);
 	$userQuery{'status'} ? $userQuery{'rows'}[0]{'user_id'} : -1;
 }
