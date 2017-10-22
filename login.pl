@@ -10,6 +10,7 @@ sub main
 {
 	if (Modules::Authentication::isUserAuthenticated() == 1)
 	{
+		Modules::Http::Cookie::setCookie('Error', 'Ya se encuentra autenticado', 5);
 		Modules::Http::Request::redirectTo('/');
 	} else 
 	{
