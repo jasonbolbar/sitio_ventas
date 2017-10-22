@@ -307,18 +307,17 @@ DELIMITER ;
 
 DELIMITER $$
 USE `sitio_ventas`$$
-CREATE PROCEDURE `send_message`(IN user_id INT, IN message VARCHAR(120), IN name VARCHAR(35), IN email VARCHAR(35), IN phone VARCHAR(11))
+CREATE PROCEDURE `send_message`(IN user_id int, IN message VARCHAR(120), IN name VARCHAR(35), IN eml VARCHAR(35), IN phone VARCHAR(11))
 BEGIN
-DECLARE person_id INT;
-
-IF user_id IS NULL THEN
-  SELECT id INTO @person_id FROM people WHERE email = email;
+IF user_id = 0 THEN
+  set @person_id = null;
+  SELECT id INTO @person_id FROM people WHERE email = eml;
   IF @person_id IS NULL THEN
-    INSERT INTO people (name, email, phone) VALUES (name, email, phone);
+    INSERT INTO people (name, email, phone) VALUES (name, eml, phone);
         SET @person_id = LAST_INSERT_ID();
     END IF;
 ELSE
-  SELECT person_id INTO @person_id FROM users where id = user_id;
+  SELECT person_id INTO @person_id FROM users where id = user_id limit 1;
 END IF;
 
 INSERT INTO messages (person_id, message) VALUES (@person_id, message);
