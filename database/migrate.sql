@@ -298,17 +298,6 @@ DELIMITER ;
 
 DELIMITER $$
 USE `sitio_ventas`$$
-CREATE PROCEDURE `delete_cart`(IN crt_id Int)
-BEGIN
-DELETE FROM items where cart_id = crt_id;
-DELETE FROM shopping_carts WHERE id = cart_id;
-END$$
-
-DELIMITER ;
-
-
-DELIMITER $$
-USE `sitio_ventas`$$
 CREATE PROCEDURE `send_message`(IN user_id int, IN message VARCHAR(120), IN name VARCHAR(35), IN eml VARCHAR(35), IN phone VARCHAR(11))
 BEGIN
 IF user_id = 0 THEN

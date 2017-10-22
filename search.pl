@@ -27,7 +27,7 @@ sub main
 		my $row;
 
 		if (@{$products{'rows'}} != 0) {
-			foreach  $result (@{$products{'rows'}}){
+			foreach $result (@{$products{'rows'}}){
 				$row = Modules::Util::getFile('templates/table-row.html');
 				$row = Modules::Util::replace('--name--', $result->{'name'}, $row);
 				$row = Modules::Util::replace('--description--', $result->{'description'}, $row);
@@ -50,5 +50,5 @@ sub main
 sub getQuery 
 {
 	%parameters = Modules::Http::Request::getRequestData();
-	return $parameters{'query'}
+	return $parameters{'query'};
 }
