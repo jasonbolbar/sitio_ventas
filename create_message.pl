@@ -22,7 +22,7 @@ sub main
 			Modules::Http::Cookie::setCookie('Success', 'Mensaje enviado con exito', 5);
 			Modules::Http::Request::redirectTo('/');
 		} else {
-			Modules::Http::Cookie::setCookie('Error', "Error al enviar el mensaje, $row{'message'}", 5);
+			Modules::Http::Cookie::setCookie('Error', "Error al enviar el mensaje", 5);
 		    Modules::Http::Request::redirectTo('/support');
 		}
     }else

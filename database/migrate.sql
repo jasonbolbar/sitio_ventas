@@ -266,12 +266,12 @@ DELIMITER $$
 USE `sitio_ventas`$$
 CREATE PROCEDURE `add_product_to_cart`(IN u_id INT, IN pr_id INT)
 BEGIN
-DECLARE in_stock INT;
-DECLARE cart_id INT;
-DECLARE item_id INT;
-DECLARE quantity INT;
+set @in_stock = 0;
+set @cart_id = null;
+set @item_id = null;
+set @quantity = 0;
 
-SELECT quantity INTO @in_stock FROM products WHERE id = product_id LIMIT 1;
+SELECT quantity INTO @in_stock FROM products WHERE id =pr_id LIMIT 1;
 
 IF @in_stock > 0 THEN
   SELECT id INTO @cart_id FROM active_shopping_carts WHERE user_id = u_id LIMIT 1;
@@ -284,13 +284,17 @@ IF @in_stock > 0 THEN
   SELECT id, quantity INTO @item_id, @quantity FROM items WHERE product_id = pr_id AND cart_id = @cart_id LIMIT 1;
 
   IF @item_id IS NULL THEN
-    INSERT INTO items (cart_id, product_id, quantity) VALUES (@cart_id, product_id, 1);
+    INSERT INTO items (cart_id, product_id, quantity) VALUES (@cart_id, pr_id, 1);
+    SELECT 1 as status, 'Producto agregado correctamente' as message;
   ELSEIF @quantity < @in_stock THEN
     SET @quantity = @quantity + 1;
-    SET @in_stock = @quantity -1;
     UPDATE items SET quantity = @quantity WHERE id = @item_id;
-    UPDATE products SET quantity = @in_stock where id = pr_id;
+    SELECT 1 as status, 'Se ha agregado otra unidad de este producto' as message;
+  ELSE
+    SELECT 0 as status, CONCAT('No existen mas unidades en existencia, (', @quantity, ') agregadas al carrito, (',@in_stock,') disponibles') as message;  
   END IF;
+ELSE
+  SELECT 0 as status, 'El producto se encuentra agotado' as message;  
 END IF;
 END$$
 

@@ -32,7 +32,7 @@ sub main
 				$row = Modules::Util::replace('--name--', $result->{'name'}, $row);
 				$row = Modules::Util::replace('--description--', $result->{'description'}, $row);
 				$row = Modules::Util::replace('--price--', $result->{'price'}, $row);
-
+				$row = Modules::Util::replace('--product-id--', $result->{'id'}, $row);
 				$rows .= $row;
 			}
 		} else {
