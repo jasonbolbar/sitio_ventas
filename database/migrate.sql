@@ -257,7 +257,7 @@ DELIMITER $$
 USE `sitio_ventas`$$
 CREATE PROCEDURE `search_products`(IN query VARCHAR(40))
 BEGIN
-SELECT * FROM available_products WHERE name LIKE CONCAT('%', query, '%');
+SELECT * FROM available_products WHERE name LIKE CONCAT(query, '%');
 END$$
 
 DELIMITER ;

@@ -1,6 +1,7 @@
 use strict;
 use Modules::Util;
 use Modules::Authentication;
+use Modules::Http::Request;
 package Modules::Renders::NavBar;
 
 my $renderLogin = sub {
@@ -25,6 +26,20 @@ my $renderIfAuthenticated = sub  {
 	return Modules::Util::replace($key, $valueToRender , $content);
 };
 
+my $renderAlert = sub {
+	my %parameters = Modules::Http::Request::getRequestData();
+	my $alert = $parameters{'alert'};
+	my $alert_html;
+	if (defined $alert) {
+		if ($alert eq 'success') {
+			$alert_html = Modules::Util::getFile('templates/alert-success.html');
+		} elsif ($alert eq 'error') {
+			$alert_html = Modules::Util::getFile('templates/alert-error.html');
+		}
+	}
+	return $alert_html;
+};
+
 sub render
 {
 	my ($content) = @_;
@@ -42,6 +57,10 @@ sub render
 		'<new-product-link>', 
 		'<a href="/new_product" class="w3-bar-item w3-button">Vender artículo</a>'
 	);
+	my $alert_message = $renderAlert->();
+	if (defined $alert_message) {
+		$content = Modules::Util::replace("<alert>", $alert_message, $content);
+	}
 	return $content;
 }
 1;
