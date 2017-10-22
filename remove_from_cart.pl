@@ -38,7 +38,6 @@ sub main
 
 sub getUserCart
 {
-	my($user_id) = @_;
 	%cartQuery = Modules::Database::Querier::execute(
 		'select id as cart_id from active_shopping_carts where user_id = ? limit 1',
 		(Modules::Authentication::getSessionUserId())
