@@ -1,0 +1,5 @@
+#!/bin/bash
+echo "Creación de la base de datos, Ingrese el nombre de usuario"
+read user
+mysql -u "$user" -p < migrate.sql
+

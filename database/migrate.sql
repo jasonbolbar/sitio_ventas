@@ -58,6 +58,8 @@ CREATE TABLE IF NOT EXISTS `sitio_ventas`.`sessions` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `user_id` INT NOT NULL,
   `session_id` VARCHAR(36) NOT NULL,
+  `browser_name` VARCHAR(125) NOT NULL,
+  `ip_address` VARCHAR(16) NOT NULL,
   `expires_at` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `user_foreign_key_idx` (`user_id` ASC),
@@ -201,7 +203,7 @@ DROP procedure IF EXISTS `is_authenticated`;
 
 DELIMITER $$
 USE `sitio_ventas`$$
-CREATE PROCEDURE `authenticate_user`(IN username varchar(20), IN psw varchar(15), IN intrval INT)
+CREATE PROCEDURE `authenticate_user`(IN username varchar(20), IN psw varchar(15), IN intrval INT, IN browser varchar(125), IN ip varchar(16))
 BEGIN
 set @id = null;
 SELECT id INTO @id FROM sitio_ventas.users where username = username and password = sha2(psw,0) limit 1;
@@ -209,7 +211,7 @@ IF !isnull(@id) then
   set @uuid = MID(UUID(),1,36);
   set @expires_at = date_add(now(), interval intrval second);
   DELETE FROM `sitio_ventas`.`sessions` WHERE user_id = @id AND expires_at < now();
-  INSERT INTO `sitio_ventas`.`sessions` ( `user_id`, `session_id`, `expires_at`) VALUES ( @id, @uuid, @expires_at);
+  INSERT INTO `sitio_ventas`.`sessions` ( `user_id`, `session_id`, `expires_at`,`browser_name`, `ip_address`) VALUES ( @id, @uuid, @expires_at, browser, ip);
   SELECT 1 as authenticated, @uuid as session_id;
 ELSE
   SELECT 0 as authenticated, null as session_id;
@@ -240,13 +242,13 @@ DELIMITER ;
 
 DELIMITER $$
 USE `sitio_ventas`$$
-CREATE PROCEDURE `is_authenticated`(IN s_id varchar(36))
+CREATE PROCEDURE `is_authenticated`(IN s_id varchar(36), IN browser varchar(125), IN ip varchar(16))
 BEGIN
-select count(*) INTO @count from sessions where session_id = s_id and expires_at > now();
+select count(*) INTO @count from sessions where session_id = s_id and browser_name = browser and ip_address = ip and expires_at > now();
 IF @count = 1 THEN
  select 1 as authenticated;
 ELSE
-  call logout(session_id);
+  call logout(s_id);
   select 0 as authenticated;
 END IF;
 END$$

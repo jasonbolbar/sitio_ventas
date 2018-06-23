@@ -11,11 +11,13 @@ sub authenticateUser
 {
 	my ($username, $password) = @_;
 	my %authentication = Modules::Database::Querier::execute(
-		'call authenticate_user(?,?,?)',
+		'call authenticate_user(?,?,?,?,?)',
 		(
 			$username,
 			$password,
-			MAX_SESSION_AGE
+			MAX_SESSION_AGE,
+			browserName(),
+			ipAddress()
 		)
 	);
 	if ( $authentication{'status'} == 1 )
@@ -41,9 +43,11 @@ sub isUserAuthenticated
 {
 	my $session_id = Modules::Http::Cookie::getCookie('session_id');
 	my %authenticated = Modules::Database::Querier::execute(
-		'call is_authenticated(?)',
+		'call is_authenticated(?,?,?)',
 		(
-			$session_id
+			$session_id,
+			browserName(),
+			ipAddress()
 		)
 	);
 	return $authenticated{'status'} ? $authenticated{'rows'}[0]{'authenticated'} : 0;
@@ -71,5 +75,13 @@ sub logout
 		Modules::Http::Cookie::setCookie('session_id','DESTROYED', MAX_SESSION_AGE);
 		Modules::Http::Cookie::setCookie('Success', 'Sesión finalizada correctamente', MAX_ERROR_COOKIE_AGE);	
 	}
+}
+
+sub browserName {
+	return $ENV{"HTTP_USER_AGENT"};
+}
+
+sub ipAddress {
+	return $ENV{"REMOTE_ADDR"};
 }
 1;

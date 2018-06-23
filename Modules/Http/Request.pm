@@ -1,4 +1,5 @@
 use strict;
+use Modules::Util;
 package Modules::Http::Request;
 sub addHeader {
 	print "Content-type: text/html\n\n";
@@ -32,7 +33,7 @@ sub getRequestData
         my ($name, $value) = split(/=/, $pair);
         $value =~ s/%(\w\w)/sprintf("%c", hex($1))/ge;
         $value=~s/\+/ /g;
-        $vars{$name}="$value";
+        $vars{$name}=Modules::Util::escapeHtml($value);
     }
     
     return %vars;

@@ -27,5 +27,13 @@ sub currencyFormat {
   $number;
 }
 
+sub escapeHtml {
+  my ($text) = @_;
+  $text = replace('<','&lt;',$text);
+  $text = replace('>','&gt;',$text);
+  $text = replace('&','&amp;',$text);
+  return $text;
+}
+
 
 1;

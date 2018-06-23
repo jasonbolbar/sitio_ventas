@@ -8,11 +8,11 @@ my $renderAlert = sub {
 	my $alert_html = "";
 	if ( $cookies{'Success'} )
 	{
-		$alert_html .= Modules::Util::replace( '--success--', $cookies{'Success'}, Modules::Util::getFile('templates/alert-success.html'));
+		$alert_html .= Modules::Util::replace( '--success--',  Modules::Util::escapeHtml($cookies{'Success'}), Modules::Util::getFile('templates/alert-success.html'));
 	}
 	if ( $cookies{'Error'} )
 	{
-		$alert_html .= Modules::Util::replace( '--error--', $cookies{'Error'},  Modules::Util::getFile('templates/alert-error.html'));
+		$alert_html .= Modules::Util::replace( '--error--',  Modules::Util::escapeHtml($cookies{'Error'}),  Modules::Util::getFile('templates/alert-error.html'));
 	}
 	return $alert_html;
 };
